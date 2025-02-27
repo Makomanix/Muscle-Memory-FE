@@ -30,7 +30,7 @@ export const validateFormData = (formData) => {
     return result;
   }
   result.status = true;
-  result.message = 'Form Validated';
+  result.message = 'Loading';
   result.css = 'valid'
   console.log(result.message)
   return result;
@@ -63,7 +63,7 @@ export const formatPassword = (password, input) => {
     return result;
   }
   result.status = true;
-  result.message = 'validated';
+  result.message = 'Loading';
   return result;
 }
 
@@ -117,7 +117,7 @@ export const validateEmail = (email) => {
     return result;
   }
   result.status = true;
-  result.message = 'validated'
+  result.message = 'Loading'
   result.css = 'valid'
   return result;
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { replaceString, validateFormData } from "../util/validations";
 
@@ -11,15 +12,15 @@ function SignupPage() {
     confirmation: '',
   })
 
-  const [ error, setError ] = useState(null)
-  const [ inputError, setInputError ] = useState(null)
+  const [ errorMessage, setErrorMessage ] = useState(null)
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault()
     const isValid = validateFormData(formData)
-    setError(isValid.error);
+    setErrorMessage(isValid.message);
     if ( !isValid.status ) {
-      setInputError(isValid.css)
+      setErrorMessage(isValid.css)
       return
     } else {
       handleSignup()
@@ -27,22 +28,44 @@ function SignupPage() {
   }
 
   async function handleSignup() {
-    setError('Submitting')
+    setErrorMessage('Submitting')
 
     try {
-      const response = await fetch('http://')
-    }
-  }
+      const res = await fetch('http://localhost:8080/auth/signup', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        })
+      });
 
-  console.log(error);
-  console.log(inputError);
+      if ( res.status === 422 ) {
+        throw new Error(
+          "Signup failed. Email already exists!"
+        )
+      };
+      
+      if ( res.status !== 200 && res.status !== 201) {
+        throw new Error('Creating a user failed!')
+      };
+      
+      const data = await res.json();
+      navigate('/login', { replace: true })
+      return data;
+
+    } catch (error){
+      setErrorMessage(error);
+    }
+  };
 
   //control form inputs
   function handleChange(e) {
     let { name, value } = e.target;
-
     value = replaceString(value)
-
     if ( name === 'email') {
       value = value.toLowerCase()
     }
@@ -50,22 +73,7 @@ function SignupPage() {
       ...prevData,
       [name]: value,
     }));
-    console.log(value)
   };
-  
-  function handleBlur(e) {
-    const name = e.target.name;
-    let value = e.target.value;
-    
-    if ( value.includes(" ") ) {
-      value = value.replace(/\s/g, '');
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }))
-      console.log(value)
-    }
-  }
 
   return (
     <>
@@ -74,16 +82,16 @@ function SignupPage() {
       </h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="username">Username:</label>
-        <input type="text" id="username" name="username" onChange={handleChange} onBlur={handleBlur} value={formData.username} minLength={2} required></input>
+        <input type="text" id="username" name="username" onChange={handleChange}  value={formData.username} minLength={2} required></input>
         <label htmlFor="email">Email:</label>
-        <input type="text" id="email" name="email" onChange={handleChange} onBlur={handleBlur} value={formData.email} required></input>
+        <input type="text" id="email" name="email" onChange={handleChange}  value={formData.email} required></input>
         <label htmlFor="password">Password:</label>
-        <input type="password" id="password" name="password" onChange={handleChange} onBlur={handleBlur} value={formData.password} minLength={7} required></input>
+        <input type="password" id="password" name="password" onChange={handleChange}  value={formData.password} minLength={7} required></input>
         <label htmlFor="confirmation">Confirm Password:</label>
-        <input type="password" id="confirmation" name="confirmation" onChange={handleChange} onBlur={handleBlur} value={formData.confirmation} minLength={7} required></input>
+        <input type="password" id="confirmation" name="confirmation" onChange={handleChange}  value={formData.confirmation} minLength={7} required></input>
         <button>Signup</button>
       </form>
-      { error ? <p>{error}</p> : null }
+      { errorMessage ? <p>{errorMessage}</p> : null }
     </>
   )
 }
