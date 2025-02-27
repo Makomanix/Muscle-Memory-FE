@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
+
+import { setToken } from "../store/tokenSlice";
 import { replaceString } from "../util/validations";
 
 function LoginPage() {
-
   const [ formData, setFormData ] = useState({
     email: '',
     password: '',
-  })
-
-  const [ errorMessage, setErrorMessage ] = useState(null)
+  });
+  const [ errorMessage, setErrorMessage ] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.token)
 
   // function handleSubmit(e) {
   //   e.preventDefault();
@@ -40,11 +43,14 @@ function LoginPage() {
       }
       const data = await res.json();
       console.log(data);
+      dispatch(setToken(data.token));
       // navigate( '/', { replace: true } )
     } catch (error){
       setErrorMessage(error);
     }
   }
+  console.log(token);
+  console.log(sessionStorage.getItem('token'));
 
   //control form inputs
   function handleChange(e) {
@@ -69,11 +75,12 @@ function LoginPage() {
       </h1>
       <form onSubmit={handleLogin}>
         <label htmlFor="email">Email:</label>
-        <input type="text" id="email" name="email" onChange={handleChange} onBlur={handleBlur} value={formData.email} required></input>
+        <input type="text" id="email" name="email" onChange={handleChange}  value={formData.email} required></input>
         <label htmlFor="password">Password:</label>
-        <input type="password" id="password" name="password" onChange={handleChange} onBlur={handleBlur} value={formData.password} required></input>
-        <button>Signup</button>
+        <input type="password" id="password" name="password" onChange={handleChange}  value={formData.password} required></input>
+        <button>Login</button>
       </form>
+      { errorMessage ? <p>{errorMessage}</p> : null }
     </>
   )
 }

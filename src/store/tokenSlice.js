@@ -12,9 +12,6 @@ const tokenSlice = createSlice({
       sessionStorage.setItem('token', action.payload)
       state.token = sessionStorage.getItem('token') || null      
     },
-    getToken(state) {
-      state.token = sessionStorage.getItem('token') || null
-    },
     clearToken(state) {
       sessionStorage.removeItem('token')
       state.token = null
@@ -22,5 +19,5 @@ const tokenSlice = createSlice({
   }
 });
 
-export const { setToken, getToken, clearToken } = tokenSlice.actions;
+export const { setToken, clearToken } = tokenSlice.actions;
 export default tokenSlice.reducer;
