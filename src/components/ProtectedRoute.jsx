@@ -6,10 +6,8 @@ function ProtectedRoute({ children }) {
   const token = useSelector((state) => state.token.token)
   const navigate = useNavigate();
 
-  console.log('work');
-
   useEffect(() => {
-    if (token === null) {
+    if ( token === null ) {
       navigate('/preview', { replace: true })
     }
   }, [navigate, token]);

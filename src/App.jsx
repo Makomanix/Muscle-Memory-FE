@@ -11,6 +11,7 @@ import LoginPage from './pages/login'
 import ProtectedRoute from './components/ProtectedRoute'
 import SignupPage from './pages/signup'
 import PreviewPage from './pages/Preview'
+import PreventedRoute from './components/PreventedRoute'
 
 const router = createBrowserRouter([
   { 
@@ -31,11 +32,17 @@ const router = createBrowserRouter([
       },
       { 
         path: '/login', 
-        element: <LoginPage /> 
+        element: 
+          <PreventedRoute>
+            <LoginPage /> 
+          </PreventedRoute>
       },
       { 
         path: '/signup', 
-        element: <SignupPage/> 
+        element: 
+          <PreventedRoute>
+            <SignupPage/> 
+          </PreventedRoute>
       },
       { 
         path: '/exercises', 

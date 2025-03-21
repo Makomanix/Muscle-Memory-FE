@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 
 import { setToken } from "../store/tokenSlice";
+import { setUser } from "../store/userSlice";
 import { replaceString } from "../util/validations";
 
 function LoginPage() {
@@ -15,12 +16,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token)
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   setErrorMessage('Submitting');
-  //   handleLogin()
-  // }
+  // const user = useSelector((state) => state.user)
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -43,14 +39,25 @@ function LoginPage() {
       }
       const data = await res.json();
       console.log(data);
-      dispatch(setToken(data.token));
-      // navigate( '/', { replace: true } )
+      if ( data.token ) {
+        console.log("in data.token");
+        const person = { username: data.username, email: data.email}
+        console.log('role', data.role);
+        dispatch(setUser(person));
+        dispatch(setToken(data.token));
+        if (data.role === 'admin') {
+          navigate( '/admin', { replace: true } );
+        } else if (data.role === 'user') {
+          navigate('/', { replace: true } );
+        }
+      }
     } catch (error){
       setErrorMessage(error);
     }
   }
-  console.log(token);
-  console.log(sessionStorage.getItem('token'));
+  console.log("token", token);
+  console.log('token email', token.payload);
+
 
   //control form inputs
   function handleChange(e) {
