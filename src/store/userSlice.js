@@ -14,16 +14,20 @@ const userSlice = createSlice({
     setUser(state, action) {
       sessionStorage.setItem('username', action.payload.username);
       sessionStorage.setItem('email', action.payload.email);
+      sessionStorage.setItem('role', action.payload.role);
 
       state.user.username = sessionStorage.getItem('username') || null;
       state.user.email = sessionStorage.getItem('email') || null;
+      state.user.role = sessionStorage.getItem('role') || null;
     },
     clearUser(state) {
       sessionStorage.removeItem('username');
       sessionStorage.removeItem('email');
+      sessionStorage.removeItem('role');
 
       state.user.username = null;
       state.user.email = null;
+      state.user.role = null;
     }
   }
 });

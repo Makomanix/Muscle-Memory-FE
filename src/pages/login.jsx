@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 
 import { setToken } from "../store/tokenSlice";
@@ -15,7 +15,7 @@ function LoginPage() {
   const [ errorMessage, setErrorMessage ] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.token)
+  // const token = useSelector((state) => state.token)
   // const user = useSelector((state) => state.user)
 
   async function handleLogin(e) {
@@ -40,23 +40,16 @@ function LoginPage() {
       const data = await res.json();
       console.log(data);
       if ( data.token ) {
-        console.log("in data.token");
-        const person = { username: data.username, email: data.email}
-        console.log('role', data.role);
+        const person = { username: data.username, email: data.email, role: data.role };
         dispatch(setUser(person));
         dispatch(setToken(data.token));
-        if (data.role === 'admin') {
-          navigate( '/admin', { replace: true } );
-        } else if (data.role === 'user') {
-          navigate('/', { replace: true } );
-        }
+
+        navigate('/', { replace: true } );
       }
     } catch (error){
       setErrorMessage(error);
     }
   }
-  console.log("token", token);
-  console.log('token email', token.payload);
 
 
   //control form inputs
