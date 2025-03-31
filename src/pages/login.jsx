@@ -2,72 +2,55 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-
-import { setToken } from "../store/tokenSlice";
-import { setUser } from "../store/userSlice";
 import { replaceString } from "../util/validations";
+import { usePostLoginMutation } from "../services/MuscleMemoryApi";
+import { setStorageUser } from "../util/sessionStorage";
+import { setUser } from "../store/userSlice";
 
 function LoginPage() {
   const [ formData, setFormData ] = useState({
     email: '',
     password: '',
   });
-  const [ errorMessage, setErrorMessage ] = useState(null);
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
-  // const token = useSelector((state) => state.token)
-  // const user = useSelector((state) => state.user)
+  const navigate = useNavigate();
+  const [ postLogin, {isLoading, error} ] = usePostLoginMutation();
 
   async function handleLogin(e) {
     e.preventDefault();
-    try {
-      const res = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      });
-      console.log(res);
-      if ( res.status !== 200 ) {
-        throw new Error(
-          "Invalid Email or Password!"
-        )
-      }
-      const data = await res.json();
-      console.log(data);
-      if ( data.token ) {
-        const person = { username: data.username, email: data.email, role: data.role };
-        dispatch(setUser(person));
-        dispatch(setToken(data.token));
+    await postLogin(formData)
+      .unwrap()
+      .then((user) => {
+        console.log('fulfilled', user)
+        setStorageUser(user);
+        dispatch(setUser(user));
+        if (user.role === 'admin') {
+          navigate('/exercises', { replace: true })
+        } else {
+          navigate('/', { replace: true })
+        }
+      })
+      // .catch((error) => console.log('rejected', error.data.message));
 
-        navigate('/', { replace: true } );
-      }
-    } catch (error){
-      setErrorMessage(error);
-    }
   }
 
-
+  
+  
   //control form inputs
   function handleChange(e) {
     let { name, value } = e.target;
-    value = replaceString(value)
-
+    value = replaceString(value);   
     if ( name === 'email') {
-      value = value.toLowerCase()
-    }
-
+      value = value.toLowerCase();
+    }    
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-
-
+  
+  
   return (
     <>
       <h1>
@@ -80,7 +63,9 @@ function LoginPage() {
         <input type="password" id="password" name="password" onChange={handleChange}  value={formData.password} required></input>
         <button>Login</button>
       </form>
-      { errorMessage ? <p>{errorMessage}</p> : null }
+      {isLoading ? 
+        <p>Logging in...</p> : error ? 
+          <p>{error.data.message}</p> : null}
     </>
   )
 }

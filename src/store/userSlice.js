@@ -1,9 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+// import { getStorageUser } from "../util/sessionStorage";
 
 const initialState = {
   user: {
-    username: sessionStorage.getItem('username') || null,
-    email: sessionStorage.getItem('email') || null
+    userId: null,
+    username: null,
+    email: null,
+    role: null
   }
 }
 
@@ -12,19 +15,14 @@ const userSlice = createSlice({
   initialState: initialState,
   reducers: {
     setUser(state, action) {
-      sessionStorage.setItem('username', action.payload.username);
-      sessionStorage.setItem('email', action.payload.email);
-      sessionStorage.setItem('role', action.payload.role);
-
-      state.user.username = sessionStorage.getItem('username') || null;
-      state.user.email = sessionStorage.getItem('email') || null;
-      state.user.role = sessionStorage.getItem('role') || null;
+      console.log(action.payload.username);
+      state.user.userId = action.payload.userId;
+      state.user.username = action.payload.username;
+      state.user.email = action.payload.email;
+      state.user.role = action.payload.role;
     },
     clearUser(state) {
-      sessionStorage.removeItem('username');
-      sessionStorage.removeItem('email');
-      sessionStorage.removeItem('role');
-
+      state.user.userId = null;
       state.user.username = null;
       state.user.email = null;
       state.user.role = null;

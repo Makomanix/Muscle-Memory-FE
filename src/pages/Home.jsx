@@ -1,9 +1,13 @@
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
+
+import { getStorageUser } from "../util/sessionStorage";
 
 
 function HomePage() {
-  const user = useSelector((state) => state.user.user)
+  let user = getStorageUser();
   console.log(user);
+  // const user = useSelector((state) => state.user.user)
+  // console.log(user);
 
   return (
     <>

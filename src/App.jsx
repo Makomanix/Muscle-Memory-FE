@@ -8,10 +8,10 @@ import SessionsPage from './pages/Sesssions'
 import RootLayout from './pages/Root'
 import ErrorPage from './pages/Error'
 import LoginPage from './pages/login'
-import ProtectedRoute from './components/ProtectedRoute'
+import PrivateRoutes from './components/PrivateRoutes'
 import SignupPage from './pages/signup'
 import PreviewPage from './pages/Preview'
-import PreventedRoute from './components/PreventedRoute'
+import PublicRoutes from './components/PublicRoutes'
 
 const router = createBrowserRouter([
   { 
@@ -22,48 +22,51 @@ const router = createBrowserRouter([
       { 
         index: true,  
         element: 
-          <ProtectedRoute>
+          <PrivateRoutes>
             <HomePage /> 
-          </ProtectedRoute>
+          </PrivateRoutes>
       },
       { 
         path: '/preview', 
-        element: <PreviewPage /> 
+        element: 
+        <PublicRoutes>
+          <PreviewPage /> 
+        </PublicRoutes>
       },
       { 
         path: '/login', 
         element: 
-          <PreventedRoute>
+          <PublicRoutes>
             <LoginPage /> 
-          </PreventedRoute>
+          </PublicRoutes>
       },
       { 
         path: '/signup', 
         element: 
-          <PreventedRoute>
+          <PublicRoutes>
             <SignupPage/> 
-          </PreventedRoute>
+          </PublicRoutes>
       },
       { 
         path: '/exercises', 
         element: 
-          <ProtectedRoute>
+          <PrivateRoutes>
             <ExercisePage />
-          </ProtectedRoute> 
+          </PrivateRoutes> 
       },
       { 
         path: '/workouts', 
         element: 
-          <ProtectedRoute>
+          <PrivateRoutes>
             <WorkoutPage />
-          </ProtectedRoute> 
+          </PrivateRoutes> 
       },
       { 
         path: '/sessions', 
         element: 
-          <ProtectedRoute>
+          <PrivateRoutes>
             <SessionsPage /> 
-          </ProtectedRoute>
+          </PrivateRoutes>
       }
     ]
   }

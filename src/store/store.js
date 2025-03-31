@@ -1,10 +1,17 @@
 import { configureStore} from "@reduxjs/toolkit";
-import tokenReducer from './tokenSlice';
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { muscleMemoryApi } from "../services/MuscleMemoryApi";
 import userReducer from './userSlice'
+
+
+
 
 export const store = configureStore({
   reducer: {
-    token: tokenReducer,
-    user: userReducer
+    [muscleMemoryApi.reducerPath]: muscleMemoryApi.reducer,
+    user: userReducer,
   },
-})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(muscleMemoryApi.middleware)
+});
+
+setupListeners(store.dispatch);
