@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { getStorageUser } from "../util/sessionStorage";
+import { getStorageUser } from "../util/sessionStorage";
+
+const storageUser = getStorageUser();
 
 const initialState = {
   user: {
-    userId: null,
-    username: null,
-    email: null,
-    role: null
+    userId: storageUser.userId || null,
+    username: storageUser.username || null,
+    email: storageUser.email || null,
+    role: storageUser.role || null
   }
 }
 
@@ -22,6 +24,7 @@ const userSlice = createSlice({
       state.user.role = action.payload.role;
     },
     clearUser(state) {
+      console.log('in slice')
       state.user.userId = null;
       state.user.username = null;
       state.user.email = null;

@@ -17,8 +17,18 @@ export const muscleMemoryApi = createApi({
         method: 'POST',
         body: user,
       })
-    })
+    }),
+    getExercises: build.query({
+      query: () => 'exercises'
+    }),
+    postExercise: build.mutation({
+      query: (exercise) => ({
+        url: 'exercises',
+        method: 'POST',
+        body: exercise,
+      })
+    }),
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation} = muscleMemoryApi

@@ -1,4 +1,4 @@
-export const validateFormData = (formData) => {
+export const validateSignupData = (formData) => {
   let result = { status: null, message: null, css: null}
   const matchedPasswords = passwordMatch(formData.password, formData.confirmation);
   const formattedPassword = formatPassword(formData.password, 'password');
@@ -122,4 +122,7 @@ export const validateEmail = (email) => {
   return result;
 }
 
-
+export const uppercaseFirstLetter = (word) => {
+  word.toLowerCase();
+  return word[0].toUpperCase() + word.slice(1);
+}

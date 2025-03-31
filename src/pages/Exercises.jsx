@@ -8,18 +8,17 @@ function ExercisesPage() {
   const dialog = useRef();
 
   function handleOpenModal() {
-      setIsOpen(!isOpen);
+    dialog.current.showModal();
+    setIsOpen(!isOpen);
   }
 
 
 
   return <>
-  {isOpen && (
     <ExerciseModal ref={dialog} modifier={'New'}/>
-  )}
     <h1>Exercises</h1>
-    {/* {exercise cards here} */}
     <button onClick={handleOpenModal}>Add Exercise</button>
+    {/* {exercise cards here} */}
   </>
 }
 

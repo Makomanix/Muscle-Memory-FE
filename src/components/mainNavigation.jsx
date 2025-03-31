@@ -11,7 +11,7 @@ function MainNavigation() {
   console.log(user)
 
   function handleLogout() {
-    clearStorageUser()
+    clearStorageUser();
     dispatch(clearUser());
   }
 

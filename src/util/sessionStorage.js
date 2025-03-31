@@ -9,5 +9,6 @@ export const getStorageUser = () => {
 }
 
 export const clearStorageUser = () => {
-  sessionStorage.removeItem('user')
+  console.log('clearing user')
+  sessionStorage.removeItem('user');
 }

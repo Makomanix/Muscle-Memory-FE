@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { replaceString, validateFormData } from "../util/validations";
+import { replaceString, validateSignupData } from "../util/validations";
 
 function SignupPage() {
 
@@ -16,8 +16,8 @@ function SignupPage() {
   const navigate = useNavigate();
 
   function handleSubmit(e) {
-    e.preventDefault()
-    const isValid = validateFormData(formData)
+    e.preventDefault();
+    const isValid = validateSignupData(formData)
     setErrorMessage(isValid.message);
     if ( !isValid.status ) {
       setErrorMessage(isValid.css)
@@ -44,6 +44,7 @@ function SignupPage() {
       });
 
       if ( res.status === 422 ) {
+        console.log('status 422')
         throw new Error(
           "Signup failed. Email already exists!"
         )
@@ -58,7 +59,8 @@ function SignupPage() {
       return data;
 
     } catch (error){
-      setErrorMessage(error);
+      console.log('error', error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -74,6 +76,8 @@ function SignupPage() {
       [name]: value,
     }));
   };
+
+  console.log(errorMessage)
 
   return (
     <>
