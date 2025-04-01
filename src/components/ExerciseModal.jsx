@@ -5,7 +5,7 @@ import { usePostExerciseMutation } from "../services/MuscleMemoryApi";
 
 function ExerciseModal({ref, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
 
-  const [ postExercise, {isLoading, error} ] = usePostExerciseMutation;
+  const [ postExercise, {isLoading, error} ] = usePostExerciseMutation();
 
   let nameRef = useRef(exerciseName || null);
   let primaryRef = useRef(primeMuscle || null);
