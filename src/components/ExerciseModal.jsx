@@ -3,7 +3,7 @@ import { useRef} from "react"
 import { uppercaseFirstLetter } from "../util/validations";
 import { usePostExerciseMutation } from "../services/MuscleMemoryApi";
 
-function ExerciseModal({ref, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
+function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
 
   const [ postExercise, {isLoading, error} ] = usePostExerciseMutation();
 
@@ -42,6 +42,7 @@ function ExerciseModal({ref, modifier, exerciseName, primeMuscle, secondMuscle, 
           <input ref={urlRef} placeholder={ytUrl || ''}></input>
           <button>Submit</button>
         </form>
+        <button onClick={onClose}>Close</button>
       </div>
     </dialog>
   )

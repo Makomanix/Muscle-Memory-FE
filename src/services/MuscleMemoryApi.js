@@ -16,6 +16,7 @@ export const muscleMemoryApi = createApi({
         url: 'auth/login',
         method: 'POST',
         body: user,
+        credentials: 'include',
       })
     }),
     getExercises: build.query({

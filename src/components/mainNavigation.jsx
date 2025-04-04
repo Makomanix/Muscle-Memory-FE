@@ -8,7 +8,7 @@ function MainNavigation() {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  console.log(user)
+  // console.log(user)
 
   function handleLogout() {
     clearStorageUser();

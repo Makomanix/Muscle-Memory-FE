@@ -1,21 +1,23 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import ExerciseModal from "../components/exerciseModal";
 
 
 function ExercisesPage() {
-  const [ isOpen, setIsOpen ] = useState(false);
   const dialog = useRef();
 
   function handleOpenModal() {
     dialog.current.showModal();
-    setIsOpen(!isOpen);
+  }
+
+  function handleCloseModal() {
+    dialog.current.close();
   }
 
 
 
   return <>
-    <ExerciseModal ref={dialog} modifier={'New'}/>
+    <ExerciseModal ref={dialog} modifier={'New'} onClose={handleCloseModal}/>
     <h1>Exercises</h1>
     <button onClick={handleOpenModal}>Add Exercise</button>
     {/* {exercise cards here} */}

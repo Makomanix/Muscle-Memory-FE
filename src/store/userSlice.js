@@ -5,10 +5,10 @@ const storageUser = getStorageUser();
 
 const initialState = {
   user: {
-    userId: storageUser.userId || null,
-    username: storageUser.username || null,
-    email: storageUser.email || null,
-    role: storageUser.role || null
+    userId: storageUser?.userId || null,
+    username: storageUser?.username || null,
+    email: storageUser?.email || null,
+    role: storageUser?.role || null
   }
 }
 
