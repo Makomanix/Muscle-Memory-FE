@@ -14,9 +14,9 @@ const customBaseQuery = async (args, api, extraOptions) => {
     console.log('inside custom 401')
     const refreshTokens = await baseQuery('/auth/access', api, extraOptions);
 
-    console.log('right after attempting to refreshTokens', refreshTokens);
-    if (refreshTokens?.status === 200) {
-      console.log('refreshTokens.data', refreshTokens?.status)
+    console.log('refreshTokens.data.status', refreshTokens.data.status);
+    if (refreshTokens?.data?.status === 200) {
+      console.log('refreshTokens.data.status', refreshTokens?.data?.status)
       result = await baseQuery(args, api, extraOptions)
       //handle logout
     }

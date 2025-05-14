@@ -7,14 +7,7 @@ import { useSelector } from "react-redux";
 function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
 
   const [ postExercise, {isLoading, error, data} ] = usePostExerciseMutation();
-  const 
-    [ trigger, 
-      { data: accessToken, 
-        error: tokenError, 
-        isLoading: loadingToken
-      }
-    ] = useLazyGetAccessTokenQuery();
-  // const [ getAccessToken, ] = useGetAccessTokenQuery();
+
   const user = useSelector((state) => state.user.user);
 
   let nameRef = useRef(exerciseName || null);
@@ -39,17 +32,9 @@ function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secon
       userId: user.id
     }
     //posting exercise
-    try {
       await postExercise(exercise);
-    }
-    catch {
-      if (error.status === 401) {
-        console.error('in', error.status);
-        trigger();
-      }
       
       onClose();
-    }
   
   }
   // console.log('out', error.status);
