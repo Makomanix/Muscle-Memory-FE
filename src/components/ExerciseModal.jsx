@@ -1,31 +1,60 @@
 
 import { useRef} from "react"
 import { uppercaseFirstLetter } from "../util/validations";
-import { usePostExerciseMutation } from "../services/MuscleMemoryApi";
+import { usePostExerciseMutation, useLazyGetAccessTokenQuery } from "../services/MuscleMemoryApi";
+import { useSelector } from "react-redux";
 
 function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
 
-  const [ postExercise, {isLoading, error} ] = usePostExerciseMutation();
+  const [ postExercise, {isLoading, error, data} ] = usePostExerciseMutation();
+  const 
+    [ trigger, 
+      { data: accessToken, 
+        error: tokenError, 
+        isLoading: loadingToken
+      }
+    ] = useLazyGetAccessTokenQuery();
+  // const [ getAccessToken, ] = useGetAccessTokenQuery();
+  const user = useSelector((state) => state.user.user);
 
   let nameRef = useRef(exerciseName || null);
   let primaryRef = useRef(primeMuscle || null);
   let secondaryRef = useRef(secondMuscle || null);
   let urlRef = useRef(ytUrl || null);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //capturing exercise form info and creating object to send in req.
     nameRef = uppercaseFirstLetter(nameRef.current.value);
     primaryRef = uppercaseFirstLetter(primaryRef.current.value);
     secondaryRef = uppercaseFirstLetter(secondaryRef.current.value);
     urlRef = uppercaseFirstLetter(urlRef.current.value);
+
     const exercise = {
       name: nameRef,
       primaryMuscle: primaryRef,
-      secondMuscle: secondaryRef,
-      url: urlRef
+      secondaryMuscle: secondaryRef,
+      url: urlRef,
+      userId: user.id
     }
-    await postExercise(exercise)
+    //posting exercise
+    try {
+      await postExercise(exercise);
+    }
+    catch {
+      if (error.status === 401) {
+        console.error('in', error.status);
+        trigger();
+      }
+      
+      onClose();
+    }
+  
   }
+  // console.log('out', error.status);
+  //if accessToken expired get a new accessToken
+    //  else if (data){
 
   return (
     <dialog ref={ref}>

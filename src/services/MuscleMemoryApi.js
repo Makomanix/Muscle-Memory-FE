@@ -1,8 +1,9 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import customBaseQuery from "./customBaseQuery";
 
 export const muscleMemoryApi = createApi({
   reducerPath: 'muscleMemoryApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/' }),
+  baseQuery: customBaseQuery,
   endpoints: (build) => ({
     createUser: build.mutation({ 
       query: (newUser) => ({
@@ -16,7 +17,12 @@ export const muscleMemoryApi = createApi({
         url: 'auth/login',
         method: 'POST',
         body: user,
-        credentials: 'include',
+      })
+    }),
+    getAccessToken: build.query({
+      query: () => ({
+        url: 'auth/access',
+        method: "GET"
       })
     }),
     getExercises: build.query({
@@ -32,4 +38,4 @@ export const muscleMemoryApi = createApi({
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useLazyGetAccessTokenQuery} = muscleMemoryApi

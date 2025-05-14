@@ -26,16 +26,15 @@ function LoginPage() {
         setStorageUser(user);
         dispatch(setUser(user));
         if (user.role === 'admin') {
-          navigate('/exercises', { replace: true })
+          navigate('/exercises', { replace: true });
         } else {
-          navigate('/', { replace: true })
+          navigate('/', { replace: true });
         }
       })
-      // .catch((error) => console.log('rejected', error.data.message));
-
+      .catch((error) => 
+        console.log('rejected', error)
+      );
   }
-
-  
   
   //control form inputs
   function handleChange(e) {

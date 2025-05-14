@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { replaceString, validateSignupData } from "../util/validations";
+import { useCreateUserMutation } from "../services/MuscleMemoryApi";
 
 function SignupPage() {
 
@@ -12,7 +13,9 @@ function SignupPage() {
     confirmation: '',
   })
 
-  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ createUser ] = useCreateUserMutation();
+
+  const [ errorMessage, setErrorMessage ] = useState({ message: null, details: [] });
   const navigate = useNavigate();
 
   function handleSubmit(e) {
@@ -29,38 +32,22 @@ function SignupPage() {
 
   async function handleSignup() {
     setErrorMessage('Submitting')
-
+    
+    const newUser = {
+      email: formData.email,
+      username: formData.username,
+      password: formData.password
+    }
+    
     try {
-      const res = await fetch('http://localhost:8080/auth/signup', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        })
-      });
+      await createUser(newUser).unwrap();
 
-      if ( res.status === 422 ) {
-        console.log('status 422')
-        throw new Error(
-          "Signup failed. Email already exists!"
-        )
-      };
-      
-      if ( res.status !== 200 && res.status !== 201) {
-        throw new Error('Creating a user failed!')
-      };
-      
-      const data = await res.json();
       navigate('/login', { replace: true })
-      return data;
-
-    } catch (error){
-      console.log('error', error);
-      setErrorMessage(error.message);
+        
+    } catch (err){
+      console.error('error', err);
+      console.log(err.data.details);
+      setErrorMessage({ message: err.data.message, details: err.data.details});
     }
   };
 
@@ -76,8 +63,6 @@ function SignupPage() {
       [name]: value,
     }));
   };
-
-  console.log(errorMessage)
 
   return (
     <>
@@ -95,7 +80,18 @@ function SignupPage() {
         <input type="password" id="confirmation" name="confirmation" onChange={handleChange}  value={formData.confirmation} minLength={7} required></input>
         <button>Signup</button>
       </form>
-      { errorMessage ? <p>{errorMessage}</p> : null }
+      { errorMessage.message ?
+        <div>
+          <p>{errorMessage.message}</p>
+        </div>
+      : null }
+      { errorMessage.details ?
+        <div>
+          {errorMessage.details.map((detail) => {
+            return <p key={detail}>{detail}</p>
+          })} 
+        </div>
+      : null }
     </>
   )
 }
