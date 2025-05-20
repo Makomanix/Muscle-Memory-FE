@@ -1,10 +1,10 @@
 
 import { useRef} from "react"
 import { uppercaseFirstLetter } from "../util/validations";
-import { usePostExerciseMutation, useLazyGetAccessTokenQuery } from "../services/MuscleMemoryApi";
+import { usePostExerciseMutation } from "../services/MuscleMemoryApi";
 import { useSelector } from "react-redux";
 
-function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
+function ExerciseModal({ref, onClose, modifier, id, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
 
   const [ postExercise, {isLoading, error, data} ] = usePostExerciseMutation();
 
@@ -24,22 +24,30 @@ function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secon
     secondaryRef = uppercaseFirstLetter(secondaryRef.current.value);
     urlRef = uppercaseFirstLetter(urlRef.current.value);
 
-    const exercise = {
-      name: nameRef,
-      primaryMuscle: primaryRef,
-      secondaryMuscle: secondaryRef,
-      url: urlRef,
-      userId: user.id
+    let exercise;
+    //post/patch exercise
+    if (modifier === "New") {
+      exercise = {
+        name: nameRef,
+        primaryMuscle: primaryRef,
+        secondaryMuscle: secondaryRef,
+        url: urlRef,
+        userId: user.id
+      }
+      await postExercise(exercise);     
+    } else {
+      exercise = {
+        _id: id,
+        name: nameRef,
+        primaryMuscle: primaryRef,
+        secondaryMuscle: secondaryRef,
+        url: urlRef,
+        userId: user.id
+      }
+      // await patchExercise(exercise);
     }
-    //posting exercise
-      await postExercise(exercise);
-      
-      onClose();
-  
+    onClose();  
   }
-  // console.log('out', error.status);
-  //if accessToken expired get a new accessToken
-    //  else if (data){
 
   return (
     <dialog ref={ref}>
@@ -47,13 +55,13 @@ function ExerciseModal({ref, onClose, modifier, exerciseName, primeMuscle, secon
         <h2>{modifier} Exercise</h2>
         <form onSubmit={handleSubmit}>
           <label>Exercise Name</label>
-          <input ref={nameRef} placeholder={exerciseName || ''}></input>
+          <input ref={nameRef} value={exerciseName || ''}></input>
           <label>Primary Muscle Group</label>
-          <input ref={primaryRef} placeholder={primeMuscle || ''}></input>
+          <input ref={primaryRef} value={primeMuscle || ''}></input>
           <label>Secondary Muscle Group</label>
-          <input ref={secondaryRef} placeholder={secondMuscle || ''}></input>
+          <input ref={secondaryRef} value={secondMuscle || ''}></input>
           <label>YouTube Link</label>
-          <input ref={urlRef} placeholder={ytUrl || ''}></input>
+          <input ref={urlRef} value={ytUrl || ''}></input>
           <button>Submit</button>
         </form>
         <button onClick={onClose}>Close</button>

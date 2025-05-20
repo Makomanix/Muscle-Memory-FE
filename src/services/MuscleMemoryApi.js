@@ -4,6 +4,7 @@ import customBaseQuery from "./customBaseQuery";
 export const muscleMemoryApi = createApi({
   reducerPath: 'muscleMemoryApi',
   baseQuery: customBaseQuery,
+  tagTypes: ['Exercise'],
   endpoints: (build) => ({
     createUser: build.mutation({ 
       query: (newUser) => ({
@@ -22,20 +23,33 @@ export const muscleMemoryApi = createApi({
     getAccessToken: build.query({
       query: () => ({
         url: 'auth/access',
-        method: "GET"
+        method: 'GET'
       })
     }),
     getExercises: build.query({
-      query: () => 'exercises'
+      query: () => ({
+        url: 'exercises',
+        method: 'GET'
+      }),
+      providesTags: ['Exercise']
     }),
     postExercise: build.mutation({
       query: (exercise) => ({
         url: 'exercises',
         method: 'POST',
         body: exercise,
-      })
+      }),
+      invalidatesTags: ['Exercise']
+    }),
+    patchExercise: build.mutation({
+      query: (exercise) => ({
+        url: 'exercises',
+        method: 'PATCH',
+        body: exercise,
+      }),
+      invalidatesTags: ['Exercise']
     }),
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useLazyGetAccessTokenQuery} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery} = muscleMemoryApi
