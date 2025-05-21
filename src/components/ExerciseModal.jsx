@@ -71,7 +71,11 @@ function ExerciseModal({dialogRef, onClose, modifier, id, exerciseName, primeMus
       onClose();
     } catch (err) {
       console.error('Failed to delete:', err);
-      setLocalError(err.data?.message || 'An error occurred while deleting');
+      if (err.status === 404) {
+        setLocalError('Exercise not found or already deleted');
+      } else {
+        setLocalError(err.data?.message || 'An error occurred while deleting');
+      }
     }
   };
 
