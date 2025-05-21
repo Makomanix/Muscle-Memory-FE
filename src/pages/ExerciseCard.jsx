@@ -14,7 +14,7 @@ function ExerciseCard({id, name, primaryMuscle, secondaryMuscle, videoUrl}) {
     dialog.current.close();
   }
   return ( <>
-    <ExerciseModal ref={dialog} onClose={handleCloseModal} modifier={'Edit'} id={id} exerciseName={name} primeMuscle={primaryMuscle} secondMuscle={secondaryMuscle} ytUrl={videoUrl}/> 
+    <ExerciseModal dialogRef={dialog} onClose={handleCloseModal} modifier={'Edit'} id={id} exerciseName={name} primeMuscle={primaryMuscle} secondMuscle={secondaryMuscle} ytUrl={videoUrl}/> 
     <li onClick={handleOpenModal}>
       <h3>{name}</h3>
       <p>{primaryMuscle}</p>

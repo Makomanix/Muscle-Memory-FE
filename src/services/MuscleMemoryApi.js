@@ -49,7 +49,15 @@ export const muscleMemoryApi = createApi({
       }),
       invalidatesTags: ['Exercise']
     }),
+    deleteExercise: build.mutation({
+      query: (exerciseId) => ({
+        url: 'exercises',
+        method: 'Delete',
+        body: exerciseId,
+      }),
+      invalidatesTags: ['Exercise']
+    }),
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery, usePatchExerciseMutation, useDeleteExerciseMutation} = muscleMemoryApi

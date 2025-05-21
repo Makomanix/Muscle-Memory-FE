@@ -39,12 +39,13 @@ function ExercisesPage() {
 
 
   return <>
-    <ExerciseModal ref={dialog} modifier={'New'} onClose={handleCloseModal}/>
+    <ExerciseModal dialogRef={dialog} modifier={'New'} onClose={handleCloseModal}/>
     <h1>Exercises</h1>
     <button onClick={handleOpenModal}>Add Exercise</button>
     <div>
       <ul>
-        {exerciseCards}
+        { exerciseCards }
+        { error ? <li>{error}</li> : null }
       </ul>
     </div>
   </>

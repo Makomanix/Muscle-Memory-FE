@@ -1,73 +1,113 @@
 
-import { useRef} from "react"
+import { useRef, useState} from "react"
 import { uppercaseFirstLetter } from "../util/validations";
-import { usePostExerciseMutation } from "../services/MuscleMemoryApi";
+import { useDeleteExerciseMutation, usePatchExerciseMutation, usePostExerciseMutation } from "../services/MuscleMemoryApi";
 import { useSelector } from "react-redux";
 
-function ExerciseModal({ref, onClose, modifier, id, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
+function ExerciseModal({dialogRef, onClose, modifier, id, exerciseName, primeMuscle, secondMuscle, ytUrl}) {
+  const [ localError, setLocalError ] = useState(null);
 
-  const [ postExercise, {isLoading, error, data} ] = usePostExerciseMutation();
+  const [ 
+    postExercise, { isLoading: loadPost } 
+  ] = usePostExerciseMutation();
+
+  const [ 
+    patchExercise, { isLoading: loadPatch } 
+  ] = usePatchExerciseMutation();
+
+  const [ 
+    deleteExercise, { isLoading: loadDelete } 
+  ] = useDeleteExerciseMutation();
+
 
   const user = useSelector((state) => state.user.user);
 
-  let nameRef = useRef(exerciseName || null);
-  let primaryRef = useRef(primeMuscle || null);
-  let secondaryRef = useRef(secondMuscle || null);
-  let urlRef = useRef(ytUrl || null);
+  const deleteButton = modifier === 'Edit' ? 
+    <button onClick={handleDelete} disabled={loadDelete}>
+      {loadDelete ? 'Deleting...' : 'Delete'}
+    </button> : null;
+
+  const nameRef = useRef();
+  const primaryRef = useRef();
+  const secondaryRef = useRef();
+  const urlRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLocalError(null);
 
     //capturing exercise form info and creating object to send in req.
-    nameRef = uppercaseFirstLetter(nameRef.current.value);
-    primaryRef = uppercaseFirstLetter(primaryRef.current.value);
-    secondaryRef = uppercaseFirstLetter(secondaryRef.current.value);
-    urlRef = uppercaseFirstLetter(urlRef.current.value);
+    const name = uppercaseFirstLetter(nameRef.current.value);
+    const primary = uppercaseFirstLetter(primaryRef.current.value);
+    const secondary = uppercaseFirstLetter(secondaryRef.current.value);
+    const url = urlRef.current.value;
 
-    let exercise;
+    const exercise = {
+      name,
+      primaryMuscle: primary,
+      secondaryMuscle: secondary,
+      url,
+      userId: user.id
+    };
+
     //post/patch exercise
-    if (modifier === "New") {
-      exercise = {
-        name: nameRef,
-        primaryMuscle: primaryRef,
-        secondaryMuscle: secondaryRef,
-        url: urlRef,
-        userId: user.id
+    try {
+      if (modifier === "New") {
+        await postExercise(exercise).unwrap();   
+      } else {
+        await patchExercise({ ...exercise, exerciseId: id}).unwrap();
       }
-      await postExercise(exercise);     
-    } else {
-      exercise = {
-        _id: id,
-        name: nameRef,
-        primaryMuscle: primaryRef,
-        secondaryMuscle: secondaryRef,
-        url: urlRef,
-        userId: user.id
-      }
-      // await patchExercise(exercise);
+      onClose();  
+    } catch (err) {
+      console.error('Failed to submit:', err)
+      setLocalError(err.data?.message || 'An error occurred while submitting');
     }
-    onClose();  
   }
 
+  async function handleDelete() {
+    setLocalError(null);
+    try {
+      await deleteExercise(id).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to delete:', err);
+      setLocalError(err.data?.message || 'An error occurred while deleting');
+    }
+  };
+
   return (
-    <dialog ref={ref}>
+    <dialog ref={dialogRef}>
       <div>
         <h2>{modifier} Exercise</h2>
         <form onSubmit={handleSubmit}>
           <label>Exercise Name</label>
-          <input ref={nameRef} value={exerciseName || ''}></input>
+          <input ref={nameRef} defaultValue={exerciseName || ''}></input>
+
           <label>Primary Muscle Group</label>
-          <input ref={primaryRef} value={primeMuscle || ''}></input>
+          <input ref={primaryRef} defaultValue={primeMuscle || ''}></input>
+
           <label>Secondary Muscle Group</label>
-          <input ref={secondaryRef} value={secondMuscle || ''}></input>
+          <input ref={secondaryRef} defaultValue={secondMuscle || ''}></input>
+
           <label>YouTube Link</label>
-          <input ref={urlRef} value={ytUrl || ''}></input>
-          <button>Submit</button>
+          <input ref={urlRef} defaultValue={ytUrl || ''}></input>
+
+          <button type="submit" disabled={loadPost || loadPatch}>
+            {loadPost || loadPatch ? 'Submitting...' : 'Submit'}
+          </button>
         </form>
+
         <button onClick={onClose}>Close</button>
+        {deleteButton}
+        {localError && (
+          <div>
+            {localError}
+          </div>
+        ) }
       </div>
     </dialog>
   )
 }
 
 export default ExerciseModal; 
+
