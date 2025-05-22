@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { clearStorageUser } from "../util/sessionStorage";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUser } from "../store/userSlice";
@@ -6,6 +6,7 @@ import { clearUser } from "../store/userSlice";
 
 function MainNavigation() {
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   // console.log(user)
@@ -13,6 +14,7 @@ function MainNavigation() {
   function handleLogout() {
     clearStorageUser();
     dispatch(clearUser());
+    navigate('/preview', { replace: true })
   }
 
   const links = user.email === null ?
@@ -24,6 +26,7 @@ function MainNavigation() {
       : user.role === 'admin' ?
     <ul>
       <li><NavLink to='/exercises'>Exercises</NavLink></li>
+      <li><button onClick={handleLogout}>Logout</button></li>
     </ul> 
       :
     <ul>

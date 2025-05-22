@@ -4,7 +4,7 @@ import customBaseQuery from "./customBaseQuery";
 export const muscleMemoryApi = createApi({
   reducerPath: 'muscleMemoryApi',
   baseQuery: customBaseQuery,
-  tagTypes: ['Exercise'],
+  tagTypes: ['Exercise', 'Workout'],
   endpoints: (build) => ({
     createUser: build.mutation({ 
       query: (newUser) => ({
@@ -57,7 +57,38 @@ export const muscleMemoryApi = createApi({
       }),
       invalidatesTags: ['Exercise']
     }),
+    getWorkouts: build.query({
+      query: () => ({
+        url: 'workouts',
+        method: 'GET'
+      }),
+      providesTags: ['Workout']
+    }),
+    postWorkout: build.mutation({
+      query: (userId, workout) => ({
+        url: 'workouts',
+        method: 'POST',
+        body: {userId: userId, workout: workout},
+      }),
+      invalidatesTags: ['Workout']
+    }),
+    patchWorkout: build.mutation({
+      query: (userId, workout) => ({
+        url: 'workouts',
+        method: 'PATCH',
+        body: {userId: userId, workout: workout},
+      }),
+      invalidatesTags: ['Workout']
+    }),
+    deleteWorkout: build.mutation({
+      query: (userId, workoutId) => ({
+        url: 'workouts',
+        method: 'DELETE',
+        body: { userId: userId, workoutId: workoutId },
+      }),
+      invalidatesTags: ['Workout']
+    }),
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery, usePatchExerciseMutation, useDeleteExerciseMutation} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery, usePatchExerciseMutation, useDeleteExerciseMutation, useGetWorkoutsQuery, usePostWorkoutMutation, usePatchWorkoutMutation, useDeleteWorkoutMutation} = muscleMemoryApi
