@@ -1,14 +1,16 @@
 import { useRef } from "react";
 
 import ExerciseModal from "../components/exerciseModal";
-import ExerciseCard from "./ExerciseCard";
+import ExerciseCard from "../components/ExerciseCard";
 
 import { useGetExercisesQuery } from "../services/MuscleMemoryApi";
+import { useSelector } from "react-redux";
 
 
 function ExercisesPage() {
   const dialog = useRef();
   const {data: exercises, isLoading, error  } = useGetExercisesQuery();
+  const user = useSelector((state) => state.user.user);
 
   console.log('exercises', exercises);
 
@@ -39,9 +41,9 @@ function ExercisesPage() {
 
 
   return <>
-    <ExerciseModal dialogRef={dialog} modifier={'New'} onClose={handleCloseModal}/>
+    <ExerciseModal dialogRef={dialog} modifier={'New'} onClose={handleCloseModal} />
     <h1>Exercises</h1>
-    <button onClick={handleOpenModal}>Add Exercise</button>
+    {user.role === 'admin' ? <button onClick={handleOpenModal}>Add Exercise</button> : null }
     <div>
       <ul>
         { exerciseCards }

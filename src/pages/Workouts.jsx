@@ -25,7 +25,7 @@ function WorkoutPage() {
           title={workout.title}
           image={workout.image}
           //type = legs, chest, back
-          //is an array of objects
+          //is an array
           type={workout.type}
           //sessions is array of objects
           sessions={workout.sessions}    

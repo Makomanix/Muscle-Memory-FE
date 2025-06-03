@@ -1,4 +1,3 @@
-
 import { useRef, useState} from "react"
 import { uppercaseFirstLetter } from "../util/validations";
 import { useDeleteExerciseMutation, usePatchExerciseMutation, usePostExerciseMutation } from "../services/MuscleMemoryApi";
@@ -31,6 +30,10 @@ function ExerciseModal({dialogRef, onClose, modifier, id, exerciseName, primeMus
   const primaryRef = useRef();
   const secondaryRef = useRef();
   const urlRef = useRef();
+
+  const isDisabled = user.role === 'user';
+
+  console.log(isDisabled);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,36 +82,63 @@ function ExerciseModal({dialogRef, onClose, modifier, id, exerciseName, primeMus
     }
   };
 
-  return (
-    <dialog ref={dialogRef}>
+  if (user.role === 'admin') {
+    return (
+          <dialog ref={dialogRef}>
       <div>
         <h2>{modifier} Exercise</h2>
         <form onSubmit={handleSubmit}>
+
           <label>Exercise Name</label>
-          <input ref={nameRef} defaultValue={exerciseName || ''}></input>
+          <input ref={nameRef} defaultValue={exerciseName || ''} disabled={isDisabled}></input>
 
           <label>Primary Muscle Group</label>
-          <input ref={primaryRef} defaultValue={primeMuscle || ''}></input>
+          <input ref={primaryRef} defaultValue={primeMuscle || ''} disabled={isDisabled}></input>
 
           <label>Secondary Muscle Group</label>
-          <input ref={secondaryRef} defaultValue={secondMuscle || ''}></input>
+          <input ref={secondaryRef} defaultValue={secondMuscle || ''} disabled={isDisabled}></input>
 
           <label>YouTube Link</label>
-          <input ref={urlRef} defaultValue={ytUrl || ''}></input>
+          <input ref={urlRef} defaultValue={ytUrl || ''} disabled={isDisabled}></input>
 
-          <button type="submit" disabled={loadPost || loadPatch}>
-            {loadPost || loadPatch ? 'Submitting...' : 'Submit'}
-          </button>
+          { user.role === 'admin' ? 
+            <button type="submit" disabled={loadPost || loadPatch}>
+              {loadPost || loadPatch ? 'Submitting...' : 'Submit'}
+            </button> : 
+            null }
+
         </form>
 
         <button onClick={onClose}>Close</button>
-        {deleteButton}
+        { user.role === 'admin' ? deleteButton : null }
         {localError && (
           <div>
             {localError}
           </div>
-        ) }
+        )}
       </div>
+    </dialog>
+    )
+  }
+
+  //return form if user.role = 'admin' & adjust buttons
+  //return user UI if user.role = 'user'
+
+  return (
+    <dialog ref={dialogRef}>
+      <section>
+        <h2>{modifier} Exercise</h2>
+
+
+
+        <button onClick={onClose}>Close</button>
+        {localError && (
+          <div>
+            {localError}
+          </div>
+        )}
+      </section>
+      
     </dialog>
   )
 }
