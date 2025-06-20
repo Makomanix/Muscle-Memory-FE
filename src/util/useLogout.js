@@ -6,11 +6,10 @@ import { clearUser } from "../store/userSlice";
 export function useLogout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  
   return function handleLogout() {
+    navigate('/preview', { replace: true });
     clearStorageUser();
     dispatch(clearUser());
-    navigate('/preview', { replace: true });
   }
-  
 }

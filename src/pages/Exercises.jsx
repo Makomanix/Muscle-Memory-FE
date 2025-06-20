@@ -12,14 +12,12 @@ function ExercisesPage() {
   const {data: exercises, isLoading, error  } = useGetExercisesQuery();
   const user = useSelector((state) => state.user.user);
 
-  console.log('exercises', exercises);
-
   let exerciseCards;
   
   if(isLoading) {
     exerciseCards = <li>Loading Exercises</li>
   } else {
-    exerciseCards = exercises.map(
+    exerciseCards = exercises?.map(
       (exercise) => 
         <ExerciseCard
           key={exercise._id}
@@ -27,12 +25,13 @@ function ExercisesPage() {
           name={exercise.name} 
           primaryMuscle={exercise.primaryMuscle} 
           secondaryMuscle={exercise.secondaryMuscle} 
-          videoUrl={exercise.videoUrl}/>
+          videoUrl={exercise.videoUrl}
+          canEdit={false}/>
     )
   }
 
   function handleOpenModal() {
-    dialog.current.showModal();
+      dialog.current.showModal();
   }
 
   function handleCloseModal() {
@@ -40,14 +39,14 @@ function ExercisesPage() {
   }
 
 
-  return <>
+  return <> 
     <ExerciseModal dialogRef={dialog} modifier={'New'} onClose={handleCloseModal} />
     <h1>Exercises</h1>
     {user.role === 'admin' ? <button onClick={handleOpenModal}>Add Exercise</button> : null }
     <div>
       <ul>
         { exerciseCards }
-        { error ? <li>{error}</li> : null }
+        { error ? <li>{error.message}</li> : null }
       </ul>
     </div>
   </>

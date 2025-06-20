@@ -58,8 +58,8 @@ export const muscleMemoryApi = createApi({
       invalidatesTags: ['Exercise']
     }),
     getWorkouts: build.query({
-      query: () => ({
-        url: 'workouts',
+      query: (userId) => ({
+        url: `workouts?userId=${userId}`,
         method: 'GET'
       }),
       providesTags: ['Workout']
@@ -91,4 +91,4 @@ export const muscleMemoryApi = createApi({
   })
 })
 
-export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery, usePatchExerciseMutation, useDeleteExerciseMutation, useGetWorkoutsQuery, usePostWorkoutMutation, usePatchWorkoutMutation, useDeleteWorkoutMutation} = muscleMemoryApi
+export const {useCreateUserMutation, usePostLoginMutation, usePostExerciseMutation, useGetExercisesQuery, usePatchExerciseMutation, useDeleteExerciseMutation, useGetWorkoutsQuery, usePostWorkoutMutation, usePatchWorkoutMutation, useDeleteWorkoutMutation, usePrefetch} = muscleMemoryApi

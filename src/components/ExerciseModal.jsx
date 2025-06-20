@@ -128,9 +128,6 @@ function ExerciseModal({dialogRef, onClose, modifier, id, exerciseName, primeMus
     <dialog ref={dialogRef}>
       <section>
         <h2>{modifier} Exercise</h2>
-
-
-
         <button onClick={onClose}>Close</button>
         {localError && (
           <div>
